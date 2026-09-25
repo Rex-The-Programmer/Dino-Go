@@ -17,14 +17,14 @@ router.get('/', async (req, res) => {
     }
 
     if (diet && diet.trim() !== "all") {
-        if (!!VALID_DIETS.includes(diet)) {
-            return res.status(400).json({ error: `Invalid diet filter. Must be one of: ${VALID_DIETS.join(', ')}`})
+        const normalizedDiet = diet.trim().toLowerCase();
 
+        if (!VALID_DIETS.includes(normalizedDiet)) {
+            return res.status(400).json({ error: `Invalid diet filter. Must be one of: ${VALID_DIETS.join(', ')}` });
         }
-        values.push(diet);
+        values.push(normalizedDiet);
         conditions.push(`diet = $${values.length}`);
     }
-
         const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
     try {
