@@ -1,0 +1,238 @@
+/* src/pages/DinoListPage.css */
+@import '../styles/tokens.css';
+
+.dino-list-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-3);
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+}
+
+.dino-list-page__hero {
+    max-width: 640px;
+    margin-bottom: var(--space-3);
+}
+
+.dino-list-page__hero h1 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: var(--text-heading);
+    line-height: 1.25;
+    margin: 0 0 var(--space-1);
+}
+
+.dino-list-page__hero p {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.dino-list-page__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.search-bar {
+    flex: 1 1 260px;
+    min-width: 200px;
+    padding: 10px var(--space-2);
+    font-size: var(--text-body);
+    font-family: var(--font-body);
+    border: 1px solid #d5dbd2;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+.search-bar:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+}
+
+.filter-chips {
+    display: flex;
+    gap: var(--space-1);
+    overflow-x: auto;
+}
+
+.filter-chip {
+    flex: none;
+    padding: 8px var(--space-2);
+    font-size: var(--text-body);
+    font-family: var(--font-body);
+    border: 1px solid #d5dbd2;
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.filter-chip.is-active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.filter-chip:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+}
+
+.dino-list-page__count {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-2);
+}
+
+.dino-list-page__status {
+    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    padding: var(--space-3) 0;
+}
+
+.dino-list-page__status--error {
+    color: #9a3b2a;
+}
+
+.dino-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+}
+
+.dino-grid__empty {
+    padding: var(--space-4) var(--space-2);
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+.dino-grid__empty p {
+    font-size: var(--text-body);
+    margin: 0 0 4px;
+    color: var(--color-text);
+}
+
+.dino-grid__empty span {
+    font-size: var(--text-small);
+}
+
+.dino-card {
+    display: block;
+    text-decoration: none;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid #e2e6dd;
+}
+
+.dino-card__image-wrap {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #dfe4d9;
+}
+
+.dino-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.dino-card__star {
+    position: absolute;
+    top: var(--space-1);
+    right: var(--space-1);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--color-text-muted);
+}
+
+.dino-card__star.is-favorite {
+    color: var(--color-accent);
+}
+
+.dino-card__star:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.dino-card__body {
+    padding: var(--space-2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-1);
+}
+
+.dino-card__name {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.diet-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: var(--text-small);
+    font-family: var(--font-body);
+    color: var(--color-diet-text);
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.diet-tag--carnivore {
+    background: var(--color-diet-carnivore);
+}
+
+.diet-tag--herbivore {
+    background: var(--color-diet-herbivore);
+}
+
+.diet-tag--omnivore {
+    background: var(--color-diet-omnivore);
+}
+
+@media (max-width: 900px) {
+    .dino-grid {
+    grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .dino-list-page {
+    padding: var(--space-3) var(--space-2);
+    }
+
+    .dino-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dino-list-page__controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-chips {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
