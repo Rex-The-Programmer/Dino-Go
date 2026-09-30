@@ -1,0 +1,21 @@
+.page {
+    padding: var(--space-4) var(--space-edge);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.title { margin: 0; font-size: 17px; }
+.lead  { margin: var(--space-1) 0 0; color: var(--color-text-muted); font-size: 13px; }
+
+.controls { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.count { margin: 0; color: var(--color-text-muted); }
+
+@media (min-width: 768px) {
+    .title { font-size: var(--font-size-lg); }
+}
+@media (min-width: 1024px) {
+    .controls { flex-direction: row; align-items: center; }
+    .controls > :first-child { flex: 0 1 420px; }
+}

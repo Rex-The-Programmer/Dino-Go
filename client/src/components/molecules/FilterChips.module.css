@@ -1,0 +1,11 @@
+.chips {
+    display: flex;
+    gap: var(--space-1);
+    overflow-x: auto;  
+    padding-bottom: 4px;
+}
+.chips > * { flex-shrink: 0; }
+
+@media (min-width: 768px) {
+    .chips { overflow-x: visible; }
+}

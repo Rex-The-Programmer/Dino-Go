@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import DietTag from '../atoms/DietTag';
+import StarIcon from '../atoms/StarIcon';
+import styles from './DinoCard.module.css';
 
 export default function DinoCard({ dino, isFavorite, onToggleFavorite }) {
     return (

@@ -25,3 +25,7 @@
 
     --radius: 10px;
 }
+
+@media (max-width: 767px) {
+    :root { --space-edge: 16px; }
+}

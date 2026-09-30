@@ -1,12 +1,17 @@
-export default function SearchBar({ value, onChange}) {
+import Input from '../atoms/Input';
+
+export default function SearchBar({ value, onChange }) {
     return (
-        <input
-            type="search"
-            className="search-bar"
-            placeholder="Search dinosaurs..."
-            value = {value}
+        <div>
+            <label htmlFor="dino-search" className="visually-hidden">
+            Search dinosaurs
+            </label>
+            <Input
+            id="dino-search"
+            value={value}
             onChange={(e) => onChange(e.target.value)}
-            aria-label="Search Dinosaurs"
-        />
-    )
+            placeholder="Search dinosaurs…"
+            />
+        </div>
+    );
 }

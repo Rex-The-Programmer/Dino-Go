@@ -1,0 +1,11 @@
+.tag {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-bg);
+    padding: 4px var(--space-1);
+    border-radius: var(--radius);
+}
+.carnivore { background: var(--color-diet-carn); }
+.herbivore { background: var(--color-diet-herb); }
+.omnivore  { background: var(--color-diet-omni); }
