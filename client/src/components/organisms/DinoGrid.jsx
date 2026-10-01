@@ -4,7 +4,7 @@ import styles from './DinoGrid.module.css';
 export default function DinoGrid({ dinos, favoriteIds, onToggleFavorite }) {
     if (dinos.length === 0) {
         return (
-            <div className="dino-grid__empty">
+            <div className={styles.empty}>
                 <p>No dinos match your search.</p>
                 <span>Try a different name, or clear the diet filter.</span>
             </div>
@@ -12,7 +12,7 @@ export default function DinoGrid({ dinos, favoriteIds, onToggleFavorite }) {
     }
 
     return (
-        <div className="dino-grid">
+        <div className={styles.grid}>
             {dinos.map((dino) => (
                 <DinoCard
                     key={dino.id}
