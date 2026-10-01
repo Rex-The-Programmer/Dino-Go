@@ -1,27 +1,33 @@
-import { Link } from 'react-router-dom';
-import DietTag from '../atoms/DietTag';
-import StarIcon from '../atoms/StarIcon';
-import styles from './DinoCard.module.css';
+import { Link } from "react-router-dom";
+import DietTag from "../atoms/DietTag";
+import StarIcon from "../atoms/StarIcon";
+import styles from "./DinoCard.module.css";
 
-export default function DinoCard({ dino, isFavorite, onToggleFavorite }) {
+export default function DinoCard({ dino, isFavorite = false, onToggleFavorite }) {
     return (
-        <Link to={`/dino/${dino.id}`} className="dino-card">
-            <div className='dino-card__image-wrap'>
-                <img src={dino.image_url} alt={dino.name} className="dino-card__image"/>
-                <button type="button" className={`dino-card__star ${isFavorite ? 'is-favorite' : ''}`} onClick={(e) => {
-                    e.preventDefault(); // don't trigger the card's navigation
-                    onToggleFavorite(dino.id);
-                    }}
-                    aria-label={isFavorite ? `Remove ${dino.name} from favorites` : `Add ${dino.name} to favorites`}
-                    aria-pressed={isFavorite}
-                >
-                    {isFavorite ? '★' : '☆'}
-                </button>
+        <article className={styles.card}>
+        <img
+            className={styles.image}
+            src={dino.image}
+            alt={dino.name}
+            loading="lazy"
+        />
+        <div className={styles.body}>
+            <div className={styles.titleRow}>
+            <h3 className={styles.name}>
+                {/* ::after on this link makes the whole card clickable */}
+                <Link to={`/dino/${dino.id}`} className={styles.nameLink}>
+                {dino.name}
+                </Link>
+            </h3>
+            <StarIcon
+                filled={isFavorite}
+                onClick={() => onToggleFavorite(dino.id)}
+                aria-label={`Favorite ${dino.name}`}
+            />
             </div>
-            <div className="dino-card__body">
-                <h3 className="dino-card__name">{dino.name}</h3>
-                <DietTag diet={dino.diet} />
-            </div>
-        </Link>
-    )
+            <DietTag diet={dino.diet} />
+        </div>
+        </article>
+    );
 }

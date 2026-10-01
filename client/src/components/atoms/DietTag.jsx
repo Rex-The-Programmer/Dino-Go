@@ -1,3 +1,16 @@
-export default function DietTag({ diet }) {
-    return <span className= {`diet-tag diet-tag--${diet}`}>{diet}</span>
+import styles from "./DietTag.module.css";
+
+const LABELS = {
+    carnivore: "Carnivore",
+    herbivore: "Herbivore",
+    omnivore: "Omnivore",
+};
+
+    export default function DietTag({ diet }) {
+    const key = String(diet).toLowerCase();
+    return (
+        <span className={`${styles.tag} ${styles[key] ?? ""}`}>
+        {LABELS[key] ?? diet}
+        </span>
+    );
 }

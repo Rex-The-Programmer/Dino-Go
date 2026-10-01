@@ -1,11 +1,13 @@
 .tag {
     display: inline-block;
+    padding: 2px var(--space-1);
+    border-radius: var(--radius);
+    color: var(--color-bg);
     font-size: var(--font-size-sm);
     font-weight: 700;
-    color: var(--color-bg);
-    padding: 4px var(--space-1);
-    border-radius: var(--radius);
+    line-height: 1.5;
 }
+
 .carnivore { background: var(--color-diet-carn); }
 .herbivore { background: var(--color-diet-herb); }
 .omnivore  { background: var(--color-diet-omni); }

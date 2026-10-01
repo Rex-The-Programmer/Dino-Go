@@ -1,15 +1,40 @@
 .button {
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    padding: 8px 16px;
+    min-height: 40px;
+    padding: 0 var(--space-2);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: var(--font-size-md);
     cursor: pointer;
-    background: white;
-}
+    transition: background-color 0.15s ease, color 0.15s ease;
+    }
 
-.chip {
-    border: 1px solid var(--color-border);
-}
+    .primary {
+    background: var(--color-primary);
+    color: var(--color-bg);
+    font-weight: 700;
+    }
+    .primary:hover { filter: brightness(1.08); }
 
-.active {
+    .ghost {
+    background: transparent;
+    color: var(--color-text);
+    border-color: var(--color-text);
+    }
+    .ghost:hover { background: var(--color-surface); }
+
+    .chip {
+    flex-shrink: 0;
+    white-space: nowrap;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    border-color: var(--color-surface-2);
+    }
+    .chip:hover { color: var(--color-text); }
+
+    .chip.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-bg);
     font-weight: 700;
 }

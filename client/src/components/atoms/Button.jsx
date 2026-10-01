@@ -1,29 +1,26 @@
-import styles from './Button.module.css';
+import styles from "./Button.module.css";
 
 export default function Button({
-    children,
-    variant = 'default',
+    variant = "primary", 
     active = false,
     onClick,
-    type = 'button',
-    ...props
-}) {
-    const className = [
-        styles.button,
-        styles[variant],
-        active ? styles.active : '',
-    ]
+    children,
+    type = "button",
+    ...rest
+    }) {
+    const className = [styles.button, styles[variant], active && styles.active]
         .filter(Boolean)
-        .join(' ');
+        .join(" ");
 
     return (
         <button
-            type={type}
-            className={className}
-            onClick={onClick}
-            {...props}
+        type={type}
+        className={className}
+        aria-pressed={variant === "chip" ? active : undefined}
+        onClick={onClick}
+        {...rest}
         >
-            {children}
+        {children}
         </button>
     );
 }

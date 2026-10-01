@@ -4,9 +4,6 @@ import FilterChips from '../components/molecules/FilterChips';
 import DinoGrid from '../components/organisms/DinoGrid';
 import styles from './DinoListPage.module.css';
 
-// ASSUMPTION: FilterChips hardcodes these internally rather than taking an
-// `options` prop. If it actually expects options passed in, move this array
-// into a prop on the <FilterChips /> element below instead.
 const DIET_OPTIONS = [
     { value: 'all', label: 'All' },
     { value: 'carnivore', label: 'Carnivore' },
@@ -28,21 +25,19 @@ export default function DinoListPage({ dinos, favoriteIds, toggleFavorite }) {
     }, [dinos, searchTerm, dietFilter]);
 
     return (
-        <div className={styles.page}>
-            <header className={styles.hero}>
-                <h1 className={styles.heroTitle}>Look up any tame before you head out</h1>
-                <p className={styles.heroSubtitle}>
+        <main className={styles.page}>
+            <section className={styles.hero}>
+                <h1 className={styles.title}>Look up any tame before you head out</h1>
+                <p className={styles.lead}>
                     Search, filter by diet, and check the taming method, food, and weapon for every dino.
                 </p>
-            </header>
+            </section>
 
             <div className={styles.controls}>
-                {/* ASSUMPTION: onChange receives the raw string value, not an
-                    event — matching FilterChips' confirmed convention. If
-                    SearchBar actually calls onChange(e) with the event, change
-                    this to onChange={(e) => setSearchTerm(e.target.value)}. */}
-                <SearchBar value={searchTerm} onChange={setSearchTerm} />
-
+                <SearchBar
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
                 <FilterChips
                     value={dietFilter}
                     onChange={setDietFilter}
@@ -50,15 +45,16 @@ export default function DinoListPage({ dinos, favoriteIds, toggleFavorite }) {
                 />
             </div>
 
-            <div className={styles.resultsHeading}>
-                <h2>{filteredDinos.length} dinosaur{filteredDinos.length === 1 ? '' : 's'}</h2>
-            </div>
-
-            <DinoGrid
-                dinos={filteredDinos}
-                favoriteIds={favoriteIds}
-                onToggleFavorite={toggleFavorite}
-            />
-        </div>
+            <section className={styles.results}>
+                <p className={styles.count}>
+                    {filteredDinos.length} dinosaur{filteredDinos.length === 1 ? '' : 's'}
+                </p>
+                <DinoGrid
+                    dinos={filteredDinos}
+                    favoriteIds={favoriteIds}
+                    onToggleFavorite={toggleFavorite}
+                />
+            </section>
+        </main>
     );
 }

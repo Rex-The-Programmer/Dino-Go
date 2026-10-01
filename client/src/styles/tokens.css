@@ -1,31 +1,37 @@
-
 :root {
-    --color-primary: #24463a;  
-    --color-accent: #c98a2b;    
-    --color-bg: #eef1ea;        
-    --color-surface: #ffffff;   
-    --color-text: #1f2420;     
-    --color-text-muted: #5b6459;
+    --color-primary:    #D98C2B;
+    --color-accent:     #C1553A;
+    --color-bg:         #14140F;
+    --color-surface:    #232319;
+    --color-surface-2:  #26261B;
+    --color-nav:        #1E1E17;
+    --color-text:       #ECE6D6;
+    --color-text-muted: #A8A290;
+    --color-text-dim:   #8F897A;
+    --color-diet-carn:  #CF6244;
+    --color-diet-herb:  #5C8A4F;
+    --color-diet-omni:  #B08A3E;
 
-    --color-diet-carnivore: #cf6244;
-    --color-diet-herbivore: #5c8a4f;
-    --color-diet-omnivore: #b08a3e;
-    --color-diet-text: #201a12;
-
-    --font-heading: Georgia, 'Times New Roman', serif;
-    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --text-heading: 24px;
-    --text-body: 14px;
-    --text-small: 12px;
+    --font-display: Georgia, "Times New Roman", serif;
+    --font-body:    Arial, Helvetica, sans-serif;
+    --font-size-lg: 24px;
+    --font-size-md: 15px;
+    --font-size-sm: 12px;
+    --font-size-logo:  18px;
+    --font-size-panel: 16px;
+    --font-size-nav:   13px;
 
     --space-1: 8px;
     --space-2: 16px;
     --space-3: 24px;
     --space-4: 32px;
-
-    --radius: 10px;
+    --space-edge: 40px;
+    --radius: 8px;
 }
 
 @media (max-width: 767px) {
-    :root { --space-edge: 16px; }
+    :root {
+        --space-edge: 16px;
+        --font-size-lg: 17px;
+    }
 }

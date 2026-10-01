@@ -1,21 +1,51 @@
 .page {
-    padding: var(--space-4) var(--space-edge);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
+    width: calc(100% - 2 * var(--space-edge));
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: var(--space-4) 0;
 }
 
-.title { margin: 0; font-size: 17px; }
-.lead  { margin: var(--space-1) 0 0; color: var(--color-text-muted); font-size: 13px; }
+.hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
 
-.controls { display: flex; flex-direction: column; gap: var(--space-2); }
+.title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
 
-.count { margin: 0; color: var(--color-text-muted); }
+.lead {
+    margin: 0;
+    max-width: 60ch;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-nav);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.count { margin: 0; }
 
 @media (min-width: 768px) {
-    .title { font-size: var(--font-size-lg); }
-}
-@media (min-width: 1024px) {
-    .controls { flex-direction: row; align-items: center; }
-    .controls > :first-child { flex: 0 1 420px; }
+    .controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
 }

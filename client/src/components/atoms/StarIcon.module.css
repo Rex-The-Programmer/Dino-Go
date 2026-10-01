@@ -1,0 +1,21 @@
+.star {
+    position: relative; 
+    z-index: 1;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.star:hover { color: var(--color-primary); }
+.filled { color: var(--color-primary); }
