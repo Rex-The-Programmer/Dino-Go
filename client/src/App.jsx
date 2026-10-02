@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/organisms/Header';
 import DinoListPage from './pages/DinoListPage';
 import DinoDetailPage from './pages/DinoDetailPage';
+import FavoritesPage from './pages/FavoritesPage';
 import { fetchDinos } from './api/dinos';
 import { fetchFavorites, addFavorite, removeFavorite } from './api/favorites';
 
@@ -95,6 +96,16 @@ export default function App() {
                     path="/dino/:id"
                     element={
                         <DinoDetailPage
+                            favoriteIds={favoriteIds}
+                            toggleFavorite={toggleFavorite}
+                        />
+                    }
+                />
+                <Route
+                    path="/favorites"
+                    element={
+                        <FavoritesPage
+                            dinos={dinos}
                             favoriteIds={favoriteIds}
                             toggleFavorite={toggleFavorite}
                         />
