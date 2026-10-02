@@ -8,14 +8,13 @@ export default function DinoCard({ dino, isFavorite = false, onToggleFavorite })
         <article className={styles.card}>
         <img
             className={styles.image}
-            src={dino.image}
+            src={dino.image_url}
             alt={dino.name}
             loading="lazy"
         />
         <div className={styles.body}>
             <div className={styles.titleRow}>
             <h3 className={styles.name}>
-                {/* ::after on this link makes the whole card clickable */}
                 <Link to={`/dino/${dino.id}`} className={styles.nameLink}>
                 {dino.name}
                 </Link>
