@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/organisms/Header';
 import DinoListPage from './pages/DinoListPage';
+import DinoDetailPage from './pages/DinoDetailPage';
 import { fetchDinos } from './api/dinos';
 import { fetchFavorites, addFavorite, removeFavorite } from './api/favorites';
 
@@ -46,8 +47,6 @@ export default function App() {
     const toggleFavorite = useCallback(async (dinoId) => {
         const wasFavorited = favoriteIds.has(dinoId);
 
-        // Optimistic update — flip the star immediately so it feels instant,
-        // then roll back only if the request actually fails.
         setFavoriteIds((prev) => {
             const next = new Set(prev);
             wasFavorited ? next.delete(dinoId) : next.add(dinoId);
@@ -62,7 +61,6 @@ export default function App() {
             }
         } catch (err) {
             console.error('Failed to toggle favorite', err);
-            // Roll back so the UI doesn't lie about what's actually saved.
             setFavoriteIds((prev) => {
                 const next = new Set(prev);
                 wasFavorited ? next.add(dinoId) : next.delete(dinoId);
@@ -88,6 +86,15 @@ export default function App() {
                     element={
                         <DinoListPage
                             dinos={dinos}
+                            favoriteIds={favoriteIds}
+                            toggleFavorite={toggleFavorite}
+                        />
+                    }
+                />
+                <Route
+                    path="/dino/:id"
+                    element={
+                        <DinoDetailPage
                             favoriteIds={favoriteIds}
                             toggleFavorite={toggleFavorite}
                         />
