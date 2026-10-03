@@ -1,15 +1,13 @@
 export const SANGUINE_BOOST = 1.3; 
 
-function effectivenessLoss(dino, gainBeforeTE, needed) {
-  return Number(dino.ineffectiveness) * (gainBeforeTE / needed);
-}
+const AFFINITY_SCALE = 4.15;
 
 function eat(state, dino, food, count, speed, needed) {
     let eaten = 0;
+    const gain = Number(food.affinity) * speed * AFFINITY_SCALE;
     while (eaten < count && state.affinity < needed && state.te > 0) {
-        const base = Number(food.affinity) * speed;
-        state.affinity += base * state.te;
-        state.te = Math.max(0, state.te - effectivenessLoss(dino, base, needed));
+        state.affinity += gain * state.te;
+        state.te *= Math.max(0, 1 - Number(dino.ineffectiveness) / gain);
         eaten++;
     }
     return eaten;
@@ -37,8 +35,8 @@ function eat(state, dino, food, count, speed, needed) {
         id: f.id,
         name: f.food_name,
         max: done ? total : null,                       
-        effectiveness: te,                              
-        bonusLevels: Math.floor((te * level) / 2),     
+        effectiveness: te,                             
+        bonusLevels: Math.floor((te * level) / 2),      
         seconds: done && rate > 0 ? (extra * Number(f.food_value)) / rate : null,
         };
     });
