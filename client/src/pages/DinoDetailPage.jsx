@@ -4,6 +4,7 @@ import StarIcon from '../components/atoms/StarIcon';
 import DietTag from '../components/atoms/DietTag';
 import { fetchDinoById } from '../api/dinos';
 import styles from './DinoDetailPage.module.css';
+import TamingCalculator from "../components/organisms/TamingCalculator";
 
 export default function DinoDetailPage({ favoriteIds, toggleFavorite }) {
     const { id } = useParams();
@@ -49,7 +50,9 @@ export default function DinoDetailPage({ favoriteIds, toggleFavorite }) {
 
     return (
         <div className={styles.page}>
-            <Link to="/" className={styles.backLink}>← Back to list</Link>
+            <Link to="/" className={styles.backLink}>
+                ← Back to list
+            </Link>
 
             <div className={styles.hero}>
                 <img
@@ -57,18 +60,24 @@ export default function DinoDetailPage({ favoriteIds, toggleFavorite }) {
                     src={dino.image_url}
                     alt={dino.name}
                 />
+
                 <div className={styles.heroBody}>
                     <div className={styles.titleRow}>
                         <h1 className={styles.name}>{dino.name}</h1>
+
                         <StarIcon
                             filled={isFavorite}
                             onClick={() => toggleFavorite(dino.id)}
                             aria-label={`Favorite ${dino.name}`}
                         />
                     </div>
+
                     <DietTag diet={dino.diet} />
+
                     {dino.description && (
-                        <p className={styles.description}>{dino.description}</p>
+                        <p className={styles.description}>
+                            {dino.description}
+                        </p>
                     )}
                 </div>
             </div>
@@ -76,30 +85,49 @@ export default function DinoDetailPage({ favoriteIds, toggleFavorite }) {
             <div className={styles.panels}>
                 <section className={styles.panel}>
                     <h2 className={styles.panelTitle}>Taming Method</h2>
+
                     <dl className={styles.factList}>
                         <dt>Method</dt>
                         <dd>{dino.taming_method}</dd>
+
                         <dt>Knockout weapon</dt>
                         <dd>{dino.knockout_weapon}</dd>
+
                         <dt>Preferred food</dt>
                         <dd>{dino.preferred_food}</dd>
+
                         <dt>Torpor drain</dt>
                         <dd>{dino.torpor_drain}</dd>
+
+                        {dino.spawn_location && (
+                            <>
+                                <dt>Where to find it</dt>
+                                <dd>{dino.spawn_location}</dd>
+                            </>
+                        )}
                     </dl>
                 </section>
 
                 <section className={styles.panel}>
                     <h2 className={styles.panelTitle}>Base Stats</h2>
+
                     <dl className={styles.factList}>
                         <dt>Health</dt>
                         <dd>{dino.base_health}</dd>
+
                         <dt>Stamina</dt>
                         <dd>{dino.base_stamina}</dd>
+
                         <dt>Melee damage</dt>
                         <dd>{dino.base_melee_damage}%</dd>
                     </dl>
                 </section>
             </div>
+
+            <TamingCalculator
+                dino={dino}
+                foods={dino.foods}
+            />
         </div>
     );
 }

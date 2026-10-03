@@ -16,7 +16,7 @@ async function request(path, options) {
 }
 
 export function addFavorite(dinoId) {
-    return request("/favorites", {
+    return request(`/favorites/${dinoId}`, {
         method: "POST",
         body: JSON.stringify({ dinoId }),
     });

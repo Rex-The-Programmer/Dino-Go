@@ -22,11 +22,13 @@
 }
 
 .image {
-    width: 220px;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 10px;
-    background: var(--color-surface, #232319);
+    width: 25%;
+    aspect-ratio: 16 / 10;
+    object-fit: contain;
+    border-radius: var(--radius);
+    background: var(--color-surface-2);
+    color: var(--color-text-dim);
+    font-size: var(--font-size-sm);
 }
 
 .heroBody {

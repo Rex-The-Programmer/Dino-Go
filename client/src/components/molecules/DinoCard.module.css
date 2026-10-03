@@ -14,10 +14,10 @@
 .image {
     width: 100%;
     aspect-ratio: 16 / 10;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: var(--radius);
     background: var(--color-surface-2);
-    color: var(--color-text-dim); 
+    color: var(--color-text-dim);
     font-size: var(--font-size-sm);
 }
 
