@@ -1,87 +1,189 @@
-# AI Usage — Dino Go
+# Dino Go | ARK: Survival Evolved Taming Reference
 
-Claude (Anthropic) was used throughout this project's backend, frontend, data, and tooling work. This document is an honest account of that usage, including the parts the AI got wrong.
+[![Made with AI](https://img.shields.io/badge/Made_with-AI_assistance-blue)](AI-Usage.md)
 
----
+> Built with AI assistance (Claude) across backend scaffolding, bug review, frontend debugging, and the taming calculator's formula work; see [AI-Usage.md](AI-Usage.md) for the full log.
 
-## 1. How I Used AI
-
-### Entry 1 — Backend bug review: `routes/dinos.js`
-- **Date / Tool:** Sept 25, 2026 — Claude
-- **What I asked:** Reviewed my self-written `dinos.js` for correctness before testing it live.
-- **What it gave back:** Flagged three bugs — a non-interpolating search pattern (single quotes instead of backticks, so `%${search.trim()}%` was being sent as a literal string), a double-negated diet validation check (`!!VALID_DIETS.includes(...)`, which rejected *valid* diets and let invalid ones through), and a mismatched catch-block variable (`catch (error)` but `console.error('...', err)`, which would throw a `ReferenceError` on any real query failure).
-- **What I kept / changed / why:** [CONFIRMED against the commit — see note below] I fixed the search-pattern bug and the catch-block bug. **I did not fully apply the diet-validation fix** — the live code still has `!!VALID_DIETS.includes(diet)`, which is still backwards. This needs a real follow-up fix before submission (see Section 2).
-- **Commit:** https://github.com/Rex-The-Programmer/Dino-Go/commit/4848c79df02b9fa11f791a0b69351f832766fa75
-
-### Entry 2 — Frontend white-screen debugging, App.jsx/DinoListPage.jsx rebuild
-- **Date / Tool:** Oct 1, 2026 — Claude
-- **What I asked:** Helped debug a white screen and reviewed/rebuilt files that had been reduced to test stubs during an earlier bisection.
-- **What it gave back:** Diagnosed two empty component files (`Button.jsx`, `StarIcon.jsx` — no default export, crashing the render tree), a `.includes()` vs `.has()` bug on a `Set`, and rebuilt `App.jsx` (data fetching, `favoriteIds` state, optimistic `toggleFavorite`) and `DinoListPage.jsx` (search/diet filter state, `DinoGrid` wiring) from scratch after confirming both had been left as test stubs.
-- **What I kept / changed / why:** [CONFIRMED against the commit] `App.jsx` and `DinoListPage.jsx` landed essentially as given. `StarIcon.jsx` was kept with two small changes: dropped `strokeLinecap`, added `aria-hidden="true"`. `Header.jsx`'s structure (NavLink pattern, brand mark) was kept, but `Header.module.css` was written independently, not from Claude.
-- **Commit:** https://github.com/Rex-The-Programmer/Dino-Go/commit/7003d4be9b66116e1ef836eab570d855dde67105
-
-### Entry 3 — Backend: real favorites endpoints (GET/POST/DELETE)
-- **Date / Tool:** [confirm date] — Claude
-- **What I asked:** Implementation for the favorites routes beyond the `501` stubs.
-- **What it gave back:** Full `GET /api/favorites` (joined against `dinos`), `POST /api/favorites/:dinoId` (with a `409` on duplicate favorite), `DELETE /api/favorites/:dinoId` (with `404` on a favorite that doesn't exist).
-- **What I kept / changed / why:** [UNVERIFIED — I have not checked this diff directly. Confirm which commit this is before citing it; likely candidate below is a guess from the commit message, not a verified match.]
-- **Commit:** [confirm — possible match: https://github.com/Rex-The-Programmer/Dino-Go/commit/ccbb3f8566312092ca11e604f35002318f37f2c6 ("favorites get, post and delete done"), not yet checked against the actual diff]
-
-### Entry 4 — Dino Detail page
-- **Date / Tool:** [confirm date] — Claude
-- **What I asked:** Built the `/dino/:id` page — fetch by id, taming info panel, stats panel.
-- **What it gave back:** `DinoDetailPage.jsx` using `useParams`, loading/error/not-found states, field names matched against the actual backend response shape.
-- **What I kept / changed / why:** [UNVERIFIED — confirm against the real diff before citing.]
-- **Commit:** [confirm — possible match: https://github.com/Rex-The-Programmer/Dino-Go/commit/ac68846bb3678e9170f4dd9f420ff17a81499136 ("Added DinoDetailPage"), not yet checked]
-
-### Entry 5 — Favorites page
-- **Date / Tool:** [confirm date] — Claude
-- **What I asked:** Built the `/favorites` page.
-- **What it gave back:** `FavoritesPage.jsx`, reusing `DinoGrid` rather than duplicating it — made `DinoGrid`'s empty-state message configurable via props so it could say "No favorites yet" instead of the List page's search-specific wording, without breaking the List page's existing usage.
-- **What I kept / changed / why:** [UNVERIFIED — confirm against the real diff before citing.]
-- **Commit:** [confirm — possible match: https://github.com/Rex-The-Programmer/Dino-Go/commit/d2376be8d6c1dd69e1db89859c7cad9bc35bcbb3 ("Added Favorites page"), not yet checked]
-
-### Entry 6 — Real ARK taming data (seed data)
-- **Date / Tool:** [confirm date] — Claude
-- **What I asked:** Research real ARK: Survival Evolved taming data (method, food, weapon, base stats) for all 18 dinos to replace placeholder values, specifically verified against Survival Evolved and not Ascended.
-- **What it gave back:** `db/seed.sql` and `db/update_seed_with_real_data.sql`, every value individually checked against Dododex's version-specific stat calculator.
-- **What I kept / changed / why:** [⚠️ No matching commit found in the list provided — this was likely run directly in Supabase's SQL Editor and never committed as a file. If so, this entry currently has nothing to cite and should not be submitted as-is. Commit the `.sql` files first, or pick a different entry.]
-- **Commit:** **MISSING — resolve before submitting**
+**Repo:** https://github.com/Rex-The-Programmer/Dino-Go
+**Live:** _not yet deployed — add your Vercel/Railway URLs here once live_
 
 ---
 
-## 2. Where the AI Got It Wrong
+## 1. Overview
 
-### Wrong #1 — Claimed taming-calculator constants could be read off Dododex
-- **What it gave me:** Early guidance suggesting the per-dino affinity constants (`affinity_needed`, `affinity_per_level`, etc.) could be read directly from Dododex.
-- **What was wrong:** Dododex only displays calculated *results* (times, percentages), not the underlying constants. This sent the build in the wrong direction initially.
-- **What I did instead:** Sourced the real constants from ARK Smart Breeding's open `values.json`, and food affinities from the ARK wiki.
-- **Commit:** [confirm — this correction is documented in your own taming-calculator handout; find the commit where the constants were switched to the ARK Smart Breeding source]
+Dino Go is a taming reference app for *ARK: Survival Evolved*, modeled structurally on Dododex. It lets a player look up a dinosaur and see its taming method, preferred food, knockout weapon, spawn location, and a live taming-effectiveness calculator before heading out to tame it — a personal coursework project covering 18 common dinosaurs.
 
-### Wrong #2 — Wrong taming-effectiveness formula
-- **What it gave me:** An initial effectiveness formula where the total effectiveness lost stayed the same regardless of how many foods were fed.
-- **What was wrong:** This contradicted Dododex's actual behavior — effectiveness loss compounds with each food fed, it doesn't stay flat. Verifying against real Dododex numbers for Rex and Trike exposed the mismatch.
-- **What I did instead:** Replaced it with a per-food multiplicative model (`TE *= 1 − ineffectiveness / affinity_per_food`), fitted against Rex and validated against Trike.
-- **Commit:** [confirm — likely https://github.com/Rex-The-Programmer/Dino-Go/commit/eaf21e6a84d4015a9b8ce9ef579ff5d89914ca84 ("Fixed working taming calculator"), not yet checked against the actual diff]
+**Core philosophy:** *A focused lookup, not a wiki crawl.* Search and filter by diet instead of scrolling walls of text.
 
-### Wrong #3 — Achatina taming method misclassified
-- **What it gave me:** Initial seed data classifying Achatina as a `Passive` tame.
-- **What was wrong:** Achatina is actually a `Knockout` tame in ARK: Survival Evolved — it just can't fight back while being knocked out, which is a different thing from a true passive tame (like taming via proximity/feeding with no combat at all).
-- **What I did instead:** Caught during a verification pass against Dododex's ASE-specific taming pages (which explicitly tag Achatina "Knockout Taming" and note it "must be tamed violently"); corrected in both `seed.sql` and the update script.
-- **Commit:** **MISSING — same issue as Entry 6 above; resolve before submitting**
+Technologies: React + Vite, React Router, CSS Modules, Node.js + Express, PostgreSQL (hosted on Supabase).
 
 ---
 
-## 3. Who Wrote What
+## 2. Setup and installation
 
-> **This section needs to be written by you, in your own words.** The rubric is explicit that this is graded on the explanation, not on who typed the code — and I can't honestly write "here's what I understand and why I built it this way" on your behalf without defeating the point of the section. What I can do is suggest strong candidates based on what I watched happen across this project:
+### Prerequisites
 
-**Strong candidates for "parts you wrote yourself":**
-- The taming calculator's effectiveness formula fitting (Rex/Trike verification, the four real bugs you found and fixed independently — duplicate import, foods query outside the handler, duplicate `/:id` route, the wrong effectiveness model) — this is extensively self-documented in your own handout already.
-- Your own `dinos.js` first draft (even though Claude reviewed it afterward, you wrote the original).
-- Any CSS/styling work not shown in this conversation (color tokens, spacing fixes) — e.g. the "Updated the color codes and spacing of grids" commit.
-- The Supabase/Railway deployment debugging (the IPv6 pooler switch, the exposed-password catch, the `/api` path-duplication fix) — this was your own troubleshooting.
+- Node.js 18+
+- A free [Supabase](https://supabase.com) account (hosted Postgres, no local install needed)
+- Git
 
-**For "the one piece of AI-written code you understand best"** — pick whichever single file you could actually explain line-by-line to someone else right now without looking anything up. The combined search+diet filter query in `dinos.js` is a reasonable choice: it directly implements the proposal's flagged risk (search and diet filter needing to combine with AND, not override each other), and the logic is short enough to genuinely hold in your head.
+### 2.1 Get the code
 
-Write both parts of this section yourself — file, commit, and the actual explanation.
+```bash
+git clone https://github.com/Rex-The-Programmer/Dino-Go.git
+cd Dino-Go
+```
+
+### 2.2 Install dependencies
+
+Backend (repo root):
+```bash
+npm install
+```
+
+Frontend:
+```bash
+cd client
+npm install
+```
+
+### 2.3 Environment and configuration
+
+Backend `.env` (repo root):
+
+| Variable | Required | Example value | Notes |
+|---|---|---|---|
+| `DATABASE_URL` | Yes | `postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres` | Use Supabase's **Session pooler** string, not the direct connection — the direct string is IPv6-only and many networks can't route it. URL-encode special characters in your password (`@` → `%40`). |
+| `PORT` | No | `3000` | Falls back to 3000 if unset. |
+
+Frontend `client/.env`:
+
+| Variable | Required | Example value | Notes |
+|---|---|---|---|
+| `VITE_API_URL` | No | `http://localhost:3000` | Falls back to `localhost:3000` if unset. Set this to your deployed backend's URL in production. |
+
+`.env` is git-ignored in both locations — never commit real credentials.
+
+### 2.4 Set up the database
+
+Run these in the Supabase SQL Editor, **in this order**:
+
+1. `db/schema.sql` — creates `dinos` and `favorites`
+2. `db/seed.sql` — loads all 18 dinos with real ARK: Survival Evolved taming data
+3. `db/add_spawn_location.sql` then `db/update_spawn_locations.sql` — adds and populates spawn locations
+4. `db/add_taming_calc.sql` then `db/update_taming_constants.sql` — adds taming-calculator columns and per-dino constants
+5. `db/add_rex_foods.sql`, `db/add_foods_all.sql`, `db/add_estimated_foods.sql` — populates the `taming_foods` table
+6. `db/update_image_urls.sql` — points `image_url` at local image files (requires the actual image files to exist first — see Known Issues)
+
+If your database already has the old *placeholder* seed data in it, use `db/update_seed_with_real_data.sql` instead of re-running `seed.sql` — re-inserting would violate the `UNIQUE(name)` constraint.
+
+---
+
+## 3. How to run it
+
+Backend:
+```bash
+npm start
+```
+```
+Dino Go server running on http://localhost:3000
+```
+
+Frontend (second terminal):
+```bash
+cd client
+npm run dev
+```
+
+Open http://localhost:5173. Confirm the backend separately at `http://localhost:3000/health` → `{"status":"ok"}`.
+
+---
+
+## 4. Features and usage
+
+Primary flow: **Dino List → search/filter → Dino Detail (taming info + calculator) → Favorite it → find it again on Favorites.**
+
+- **Dino List (`/`):** search by name, filter by diet (All / Carnivore / Herbivore / Omnivore) — both combine correctly, confirmed against live data (18 total → 10 carnivore + 7 herbivore + 1 omnivore).
+- **Dino Detail (`/dino/:id`):** taming method, knockout weapon, preferred food, torpor drain, base stats, spawn location (general biome — see Known Issues), and a Dododex-style **taming calculator**: level input (default 150), taming speed, a Sanguine Elixir checkbox, and a top-3 food table showing fed/max, time, and effectiveness with bonus levels.
+- **Favorites (`/favorites`):** star any dino from the List or Detail page — persisted to Postgres via the real `favorites` table, not just local state.
+- **About (`/about`):** static project info.
+
+### Main API endpoints
+
+| Method | Path | What it does |
+|---|---|---|
+| GET | `/health` | Basic liveness check |
+| GET | `/api/dinos?search=&diet=` | List dinos; `search` and `diet` combine with AND |
+| GET | `/api/dinos/:id` | Full dino detail, including its `foods` array for the taming calculator; `404` if not found |
+| GET | `/api/favorites` | List favorited dinos, joined against `dinos` |
+| POST | `/api/favorites/:dinoId` | Add a favorite; `409` if already favorited, `404` if the dino doesn't exist |
+| DELETE | `/api/favorites/:dinoId` | Remove a favorite; `404` if it wasn't favorited |
+
+---
+
+## 5. Project structure
+
+```
+Dino-Go/
+  db/
+    schema.sql, seed.sql, update_seed_with_real_data.sql
+    add_spawn_location.sql, update_spawn_locations.sql
+    add_taming_calc.sql, update_taming_constants.sql
+    add_rex_foods.sql, add_foods_all.sql, add_estimated_foods.sql
+    update_image_urls.sql
+  routes/
+    dinos.js       # GET / , GET /:id (+ taming_foods join)
+    favorites.js    # GET / , POST /:dinoId , DELETE /:dinoId
+  db.js             # Postgres pool, Supabase session pooler + SSL
+  server.js         # Express app entry
+  client/
+    src/
+      api/
+        dinos.js, favorites.js
+      components/
+        atoms/       # Button, StarIcon, DietTag
+        molecules/   # SearchBar, FilterChips, DinoCard
+        organisms/   # Header, DinoGrid, TamingCalculator
+      pages/
+        DinoListPage.jsx, DinoDetailPage.jsx, FavoritesPage.jsx, AboutPage.jsx
+      utils/
+        tamingCalc.js   # pure taming-effectiveness calculation logic
+      App.jsx
+```
+
+---
+
+## 6. Screenshots
+
+> Captured during local development, before the final color-token fixes were applied — see Known Issues.
+
+![Dino List — all 18](screenshots/01-dino-list-all-18.jpg)
+*All 18 dinosaurs, no filter applied.*
+
+![Dino List — carnivore filter](screenshots/02-dino-list-carnivore-filter-10.jpg)
+*Carnivore filter — 10 dinosaurs.*
+
+![Dino List — herbivore filter](screenshots/03-dino-list-herbivore-filter-7.jpg)
+*Herbivore filter — 7 dinosaurs.*
+
+![Dino List — omnivore filter](screenshots/04-dino-list-omnivore-filter-1.jpg)
+*Omnivore filter — 1 dinosaur (Therizinosaurus).*
+
+---
+
+## 7. Known issues and next steps
+
+- **Diet validation is still backwards in `routes/dinos.js`.** `if (!!VALID_DIETS.includes(diet))` returns `400` for *valid* diets and lets invalid ones through — confirmed still live by diffing the actual commit. One-line fix: drop one `!`.
+- Hero heading and filter-button text render in a near-invisible color — likely a shared `tokens.css` token, not yet fixed.
+- 11 of 18 dinos' taming-calculator food data is flagged `estimated = true` — not yet individually verified against Dododex.
+- 4 dinos (Megalodon, Beelzebufo, Achatina, Castoroides) have placeholder taming-calculator foods by request — need real values.
+- The `4.15` taming-effectiveness scale constant was fitted against Rex and Trike, not sourced from an in-game name — worth re-checking as more dinos get verified.
+- Sanguine Elixir's ×1.3 taming boost has never been checked against Dododex directly.
+- Spawn location data is general-biome-level (the official wiki shows this as a heatmap image, not text) — coarser than the rest of the dataset.
+- Not yet deployed. See the Vercel (frontend) + Railway (backend) deployment notes for the planned setup.
+
+---
+
+## License
+
+Coursework project — no license specified.
