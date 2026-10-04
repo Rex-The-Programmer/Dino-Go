@@ -168,7 +168,15 @@ Expected response:
 
 ## Screenshots
 
-Screenshots for the project are stored in the `Screenshots/` folder in the repository root.
+The app screenshots are stored in the repository's `Screenshots/` folder.
+
+![Dino list](Screenshots/Screenshot_20.jpg)
+
+![Dino detail](Screenshots/Screenshot_21.jpg)
+
+![Favorites view](Screenshots/Screenshot_22.jpg)
+
+![Project UI overview](Screenshots/Screenshot_23.jpg)
 
 ## API overview
 
