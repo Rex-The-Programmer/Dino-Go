@@ -1,189 +1,190 @@
-# Dino Go | ARK: Survival Evolved Taming Reference
+# Dino Go
 
-[![Made with AI](https://img.shields.io/badge/Made_with-AI_assistance-blue)](AI-Usage.md)
+A lightweight ARK: Survival Evolved taming reference app built with React, Express, and PostgreSQL.
 
-> Built with AI assistance (Claude) across backend scaffolding, bug review, frontend debugging, and the taming calculator's formula work; see [AI-Usage.md](AI-Usage.md) for the full log.
+[![AI-assisted project](https://img.shields.io/badge/Made_with-AI_assistance-blue)](AI-USAGE.md)
 
-**Repo:** https://github.com/Rex-The-Programmer/Dino-Go
-**Live:** _not yet deployed — add your Vercel/Railway URLs here once live_
+> Built with AI assistance during backend setup, debugging, and data/calculation work. See [AI-USAGE.md](AI-USAGE.md) for the project notes.
 
----
+## Overview
 
-## 1. Overview
+Dino Go helps players quickly find a dinosaur, check its taming method, preferred food, knockout requirements, spawn location, and a built-in taming effectiveness calculator before heading out to tame it.
 
-Dino Go is a taming reference app for *ARK: Survival Evolved*, modeled structurally on Dododex. It lets a player look up a dinosaur and see its taming method, preferred food, knockout weapon, spawn location, and a live taming-effectiveness calculator before heading out to tame it — a personal coursework project covering 18 common dinosaurs.
+The project is designed around a simple workflow:
 
-**Core philosophy:** *A focused lookup, not a wiki crawl.* Search and filter by diet instead of scrolling walls of text.
+1. Search or filter the dino list
+2. Open a dino detail page
+3. Review taming info and food efficiency
+4. Save favorites for quick access later
 
-Technologies: React + Vite, React Router, CSS Modules, Node.js + Express, PostgreSQL (hosted on Supabase).
+## Tech stack
 
----
+- Frontend: React + Vite
+- Routing: React Router
+- Backend: Node.js + Express
+- Database: PostgreSQL via Supabase
 
-## 2. Setup and installation
+## Features
 
-### Prerequisites
+- Dino list with search and diet filters
+- Dino detail view with taming information
+- Favorite tracking in the database
+- Taming effectiveness calculator
+- Responsive UI for desktop and local use
+
+## Project structure
+
+```text
+Dino-Go/
+├── client/                 # React frontend
+│   ├── src/
+│   └── package.json
+├── routes/                 # Express route handlers
+├── db.js                   # PostgreSQL connection setup
+├── server.js               # API server entry point
+├── package.json
+├── README.md
+├── AI-USAGE.md
+├── LICENSE
+├── Screenshots/            # Local app screenshots
+└── node_modules/
+```
+
+## Prerequisites
 
 - Node.js 18+
-- A free [Supabase](https://supabase.com) account (hosted Postgres, no local install needed)
+- npm
+- A Supabase project with PostgreSQL enabled
 - Git
 
-### 2.1 Get the code
+## Setup
+
+### 1) Clone the repo
 
 ```bash
 git clone https://github.com/Rex-The-Programmer/Dino-Go.git
 cd Dino-Go
 ```
 
-### 2.2 Install dependencies
+### 2) Install dependencies
 
-Backend (repo root):
+Backend:
+
 ```bash
 npm install
 ```
 
 Frontend:
+
 ```bash
 cd client
 npm install
 ```
 
-### 2.3 Environment and configuration
+### 3) Configure environment variables
 
-Backend `.env` (repo root):
+Create a `.env` file in the project root for the backend:
 
-| Variable | Required | Example value | Notes |
-|---|---|---|---|
-| `DATABASE_URL` | Yes | `postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres` | Use Supabase's **Session pooler** string, not the direct connection — the direct string is IPv6-only and many networks can't route it. URL-encode special characters in your password (`@` → `%40`). |
-| `PORT` | No | `3000` | Falls back to 3000 if unset. |
+```env
+DATABASE_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres
+PORT=3000
+```
 
-Frontend `client/.env`:
+Create a `client/.env` file for the frontend:
 
-| Variable | Required | Example value | Notes |
-|---|---|---|---|
-| `VITE_API_URL` | No | `http://localhost:3000` | Falls back to `localhost:3000` if unset. Set this to your deployed backend's URL in production. |
+```env
+VITE_API_URL=http://localhost:3000
+```
 
-`.env` is git-ignored in both locations — never commit real credentials.
+Notes:
 
-### 2.4 Set up the database
+- Use the Supabase session pooler connection string for the backend.
+- URL-encode special characters in the password if needed.
+- Keep `.env` files local and do not commit real credentials.
 
-Run these in the Supabase SQL Editor, **in this order**:
+### 4) Set up the database
 
-1. `db/schema.sql` — creates `dinos` and `favorites`
-2. `db/seed.sql` — loads all 18 dinos with real ARK: Survival Evolved taming data
-3. `db/add_spawn_location.sql` then `db/update_spawn_locations.sql` — adds and populates spawn locations
-4. `db/add_taming_calc.sql` then `db/update_taming_constants.sql` — adds taming-calculator columns and per-dino constants
-5. `db/add_rex_foods.sql`, `db/add_foods_all.sql`, `db/add_estimated_foods.sql` — populates the `taming_foods` table
-6. `db/update_image_urls.sql` — points `image_url` at local image files (requires the actual image files to exist first — see Known Issues)
+Create the required database tables in Supabase/Postgres before running the app. At minimum, the backend expects a `dinos` table and a `favorites` table, and dino detail requests also read from `taming_foods`.
 
-If your database already has the old *placeholder* seed data in it, use `db/update_seed_with_real_data.sql` instead of re-running `seed.sql` — re-inserting would violate the `UNIQUE(name)` constraint.
+Example schema ideas:
 
----
+```sql
+CREATE TABLE dinos (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  diet TEXT,
+  taming_method TEXT,
+  knockout_weapon TEXT,
+  spawn_location TEXT
+);
 
-## 3. How to run it
+CREATE TABLE favorites (
+  id SERIAL PRIMARY KEY,
+  dino_id INTEGER NOT NULL,
+  UNIQUE (dino_id)
+);
 
-Backend:
+CREATE TABLE taming_foods (
+  id SERIAL PRIMARY KEY,
+  dino_id INTEGER NOT NULL,
+  food_name TEXT NOT NULL,
+  quantity INTEGER,
+  sort_order INTEGER
+);
+```
+
+## Running the app
+
+Start the API in the project root:
+
 ```bash
-npm start
-```
-```
-Dino Go server running on http://localhost:3000
+node server.js
 ```
 
-Frontend (second terminal):
+Then start the frontend in a second terminal:
+
 ```bash
 cd client
 npm run dev
 ```
 
-Open http://localhost:5173. Confirm the backend separately at `http://localhost:3000/health` → `{"status":"ok"}`.
+Open the app in the browser at:
 
----
+```text
+http://localhost:5173
+```
 
-## 4. Features and usage
+Verify the backend is running at:
 
-Primary flow: **Dino List → search/filter → Dino Detail (taming info + calculator) → Favorite it → find it again on Favorites.**
+```text
+http://localhost:3000/health
+```
 
-- **Dino List (`/`):** search by name, filter by diet (All / Carnivore / Herbivore / Omnivore) — both combine correctly, confirmed against live data (18 total → 10 carnivore + 7 herbivore + 1 omnivore).
-- **Dino Detail (`/dino/:id`):** taming method, knockout weapon, preferred food, torpor drain, base stats, spawn location (general biome — see Known Issues), and a Dododex-style **taming calculator**: level input (default 150), taming speed, a Sanguine Elixir checkbox, and a top-3 food table showing fed/max, time, and effectiveness with bonus levels.
-- **Favorites (`/favorites`):** star any dino from the List or Detail page — persisted to Postgres via the real `favorites` table, not just local state.
-- **About (`/about`):** static project info.
+Expected response:
 
-### Main API endpoints
+```json
+{ "status": "ok" }
+```
 
-| Method | Path | What it does |
+## Screenshots
+
+Screenshots for the project are stored in the `Screenshots/` folder in the repository root.
+
+## API overview
+
+| Method | Route | Description |
 |---|---|---|
-| GET | `/health` | Basic liveness check |
-| GET | `/api/dinos?search=&diet=` | List dinos; `search` and `diet` combine with AND |
-| GET | `/api/dinos/:id` | Full dino detail, including its `foods` array for the taming calculator; `404` if not found |
-| GET | `/api/favorites` | List favorited dinos, joined against `dinos` |
-| POST | `/api/favorites/:dinoId` | Add a favorite; `409` if already favorited, `404` if the dino doesn't exist |
-| DELETE | `/api/favorites/:dinoId` | Remove a favorite; `404` if it wasn't favorited |
+| GET | `/health` | Health check |
+| GET | `/api/dinos` | List dinos with optional search/filter parameters |
+| GET | `/api/dinos/:id` | Get a single dino with taming details |
+| GET | `/api/favorites` | List favorited dinos |
+| POST | `/api/favorites/:dinoId` | Add a favorite |
+| DELETE | `/api/favorites/:dinoId` | Remove a favorite |
 
----
+## Known issues
 
-## 5. Project structure
-
-```
-Dino-Go/
-  db/
-    schema.sql, seed.sql, update_seed_with_real_data.sql
-    add_spawn_location.sql, update_spawn_locations.sql
-    add_taming_calc.sql, update_taming_constants.sql
-    add_rex_foods.sql, add_foods_all.sql, add_estimated_foods.sql
-    update_image_urls.sql
-  routes/
-    dinos.js       # GET / , GET /:id (+ taming_foods join)
-    favorites.js    # GET / , POST /:dinoId , DELETE /:dinoId
-  db.js             # Postgres pool, Supabase session pooler + SSL
-  server.js         # Express app entry
-  client/
-    src/
-      api/
-        dinos.js, favorites.js
-      components/
-        atoms/       # Button, StarIcon, DietTag
-        molecules/   # SearchBar, FilterChips, DinoCard
-        organisms/   # Header, DinoGrid, TamingCalculator
-      pages/
-        DinoListPage.jsx, DinoDetailPage.jsx, FavoritesPage.jsx, AboutPage.jsx
-      utils/
-        tamingCalc.js   # pure taming-effectiveness calculation logic
-      App.jsx
-```
-
----
-
-## 6. Screenshots
-
-> Captured during local development, before the final color-token fixes were applied — see Known Issues.
-
-![Dino List — all 18](screenshots/01-dino-list-all-18.jpg)
-*All 18 dinosaurs, no filter applied.*
-
-![Dino List — carnivore filter](screenshots/02-dino-list-carnivore-filter-10.jpg)
-*Carnivore filter — 10 dinosaurs.*
-
-![Dino List — herbivore filter](screenshots/03-dino-list-herbivore-filter-7.jpg)
-*Herbivore filter — 7 dinosaurs.*
-
-![Dino List — omnivore filter](screenshots/04-dino-list-omnivore-filter-1.jpg)
-*Omnivore filter — 1 dinosaur (Therizinosaurus).*
-
----
-
-## 7. Known issues and next steps
-
-- **Diet validation is still backwards in `routes/dinos.js`.** `if (!!VALID_DIETS.includes(diet))` returns `400` for *valid* diets and lets invalid ones through — confirmed still live by diffing the actual commit. One-line fix: drop one `!`.
-- Hero heading and filter-button text render in a near-invisible color — likely a shared `tokens.css` token, not yet fixed.
-- 11 of 18 dinos' taming-calculator food data is flagged `estimated = true` — not yet individually verified against Dododex.
-- 4 dinos (Megalodon, Beelzebufo, Achatina, Castoroides) have placeholder taming-calculator foods by request — need real values.
-- The `4.15` taming-effectiveness scale constant was fitted against Rex and Trike, not sourced from an in-game name — worth re-checking as more dinos get verified.
-- Sanguine Elixir's ×1.3 taming boost has never been checked against Dododex directly.
-- Spawn location data is general-biome-level (the official wiki shows this as a heatmap image, not text) — coarser than the rest of the dataset.
-- Not yet deployed. See the Vercel (frontend) + Railway (backend) deployment notes for the planned setup.
-
----
+The project is in active development and the README reflects the current state of the app. Some known issues may include incomplete data validation, optional placeholder values in certain taming calculations, and screenshot assets being stored in the repo root rather than a dedicated frontend assets folder.
 
 ## License
 
-Coursework project — no license specified.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
