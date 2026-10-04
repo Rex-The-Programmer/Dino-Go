@@ -12,7 +12,7 @@ export async function fetchDinos({ search = '', diet = 'all' } = {}) {
 }
 
 export async function fetchDinoById(id) {
-    const res = await fetch(`${API_BASE}/api/dinos/${id}`);
+    const res = await fetch(`${API_BASE}/dinos/${id}`);
     if (res.status === 404) throw new Error('Dino not found');
     if (!res.ok) throw new Error('Failed to fetch dino');
     return res.json();
