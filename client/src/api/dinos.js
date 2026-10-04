@@ -6,7 +6,7 @@ export async function fetchDinos({ search = '', diet = 'all' } = {}) {
     if (diet && diet !== 'all') params.set('diet', diet);
 
     const query = params.toString();
-    const res = await fetch(`${API_BASE}/api/dinos${query ? `?${query}` : ''}`);
+    const res = await fetch(`${API_BASE}/dinos${query ? `?${query}` : ''}`);
     if (!res.ok) throw new Error('Failed to fetch dinos');
     return res.json();
 }
