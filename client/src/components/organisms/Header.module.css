@@ -14,16 +14,12 @@
     gap: var(--space-1);
 }
 
-.brandMark {
-    display: grid;
-    place-items: center;
+.brandLogo {
+    display: block;
     width: 40px;
     height: 40px;
     border-radius: var(--radius);
-    background: var(--color-primary);
-    color: var(--color-bg);
-    font-family: var(--font-display);
-    font-weight: 700;
+    object-fit: cover;
 }
 
 .brandName {

@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom';
+import logo from '../../../../Screenshots/dododex.png';
 import styles from './Header.module.css';
 
 export default function Header() {
     return (
         <header className={styles.header}>
             <div className={styles.brand}>
-                <div className={styles.brandMark}>DG</div>
+                <img className={styles.brandLogo} src={logo} alt="Dino Go logo" />
                 <div>
                     <div className={styles.brandName}>Dino Go</div>
                     <div className={styles.brandSub}>ARK taming reference</div>
