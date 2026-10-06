@@ -93,7 +93,7 @@ PORT=3000
 Create a `client/.env` file for the frontend:
 
 ```env
-VITE_API_URL=http://localhost:3000
+VITE_API_URL=http://localhost:3000/api
 ```
 
 Notes:
@@ -128,6 +128,8 @@ CREATE TABLE taming_foods (
   id SERIAL PRIMARY KEY,
   dino_id INTEGER NOT NULL,
   food_name TEXT NOT NULL,
+  affinity NUMERIC NOT NULL,
+  food_value NUMERIC NOT NULL,
   quantity INTEGER,
   sort_order INTEGER
 );

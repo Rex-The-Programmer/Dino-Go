@@ -56,7 +56,12 @@ router.get("/", async (req, res) => {
         return res.status(404).json({ error: "Dino not found" });
         }
 
-        res.json(result.rows[0]);
+        const foods = await pool.query(
+            "SELECT * FROM taming_foods WHERE dino_id = $1 ORDER BY sort_order",
+            [id]
+        );
+
+        res.json({ ...result.rows[0], foods: foods.rows });
     } catch (err) {
         console.error("Error fetching dino:", err);
         res.status(500).json({ error: "Failed to fetch dino" });
