@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { KIBBLE_RECIPES, KIBBLE_CRAFTING_STATION, KIBBLE_COOK_TIME } from '../data/kibbleRecipes';
+import { KIBBLE_RECIPES, KIBBLE_CRAFTING_STATION, KIBBLE_COOK_TIME } from '../data/KibbleRecipes.js';
 import styles from './KibbleRecipesPage.module.css';
 
 export default function KibbleRecipesPage({ dinos }) {
