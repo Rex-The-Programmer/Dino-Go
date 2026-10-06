@@ -5,6 +5,7 @@ import DinoListPage from './pages/DinoListPage';
 import DinoDetailPage from './pages/DinoDetailPage';
 import FavoritesPage from './pages/FavoritesPage';
 import KibbleRecipesPage from './pages/KibbleRecipesPage';
+import AboutPage from './pages/AboutPage';
 import { fetchDinos } from './api/dinos';
 import { fetchFavorites, addFavorite, removeFavorite } from './api/favorites';
 
@@ -116,6 +117,7 @@ export default function App() {
                     path="/kibble"
                     element={<KibbleRecipesPage dinos={dinos} />}
                 />
+                <Route path="/about" element={<AboutPage />} />
             </Routes>
         </BrowserRouter>
     );
