@@ -1,12 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import logo from '../../../../Screenshots/dododex.png';
 import styles from './Header.module.css';
 
 export default function Header() {
     return (
         <header className={styles.header}>
             <div className={styles.brand}>
-                <img className={styles.brandLogo} src={logo} alt="Dino Go logo" />
+                <div className={styles.brandMark}>DG</div>
                 <div>
                     <div className={styles.brandName}>Dino Go</div>
                     <div className={styles.brandSub}>ARK taming reference</div>
@@ -30,6 +29,14 @@ export default function Header() {
                     }
                 >
                     Favorites
+                </NavLink>
+                <NavLink
+                    to="/kibble"
+                    className={({ isActive }) =>
+                        isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+                    }
+                >
+                    Kibble
                 </NavLink>
                 <NavLink
                     to="/about"

@@ -1,0 +1,90 @@
+.page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.heroTitle {
+    margin: 0 0 8px;
+}
+
+.heroSubtitle {
+    margin: 0 0 8px;
+    color: var(--color-text-dim, #a8a290);
+}
+
+.craftingNote {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-text-dim, #a8a290);
+}
+
+.recipeList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.recipeCard {
+    background: var(--color-surface, #232319);
+    border-radius: 10px;
+    padding: 16px 18px;
+}
+
+.recipeHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.recipeTitle {
+    margin: 0;
+    font-size: 16px;
+}
+
+.eggSize {
+    font-size: 11px;
+    color: var(--color-text-dim, #a8a290);
+    white-space: nowrap;
+}
+
+.ingredientList {
+    margin: 0 0 14px;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.usedBy {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 10px;
+}
+
+.usedByLabel {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-dim, #a8a290);
+    margin-bottom: 6px;
+}
+
+.dinoLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dinoLink {
+    font-size: 12px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    background: rgba(217, 140, 43, 0.15);
+    color: var(--color-primary, #d98c2b);
+    text-decoration: none;
+}
