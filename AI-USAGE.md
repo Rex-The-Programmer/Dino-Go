@@ -1,6 +1,6 @@
 # AI Usage — Dino Go
 
-Claude (Anthropic) was used throughout this project's backend, frontend, data, and tooling work. This document is an honest account of that usage, including the parts the AI got wrong.
+Claude (Anthropic) was used throughout this project's backend, frontend, data, and tooling work. Copilot SDK in VS Code was later used to fix deployment configuration and update this document. This is an honest account of that usage, including the parts the AI got wrong.
 
 ---
 
@@ -10,7 +10,7 @@ Claude (Anthropic) was used throughout this project's backend, frontend, data, a
 - **Date / Tool:** Sept 25, 2026 — Claude
 - **What I asked:** Reviewed my self-written `dinos.js` for correctness before testing it live.
 - **What it gave back:** Flagged three bugs — a non-interpolating search pattern (single quotes instead of backticks, so `%${search.trim()}%` was being sent as a literal string), a double-negated diet validation check (`!!VALID_DIETS.includes(...)`, which rejected *valid* diets and let invalid ones through), and a mismatched catch-block variable (`catch (error)` but `console.error('...', err)`, which would throw a `ReferenceError` on any real query failure).
-- **What I kept / changed / why:** I fixed the search-pattern bug and the catch-block bug. **I did not fully apply the diet-validation fix** — the live code still has `!!VALID_DIETS.includes(diet)`, which is still backwards. This needs a real follow-up fix before submission (see Section 2).
+- **What I kept / changed / why:** I fixed the search-pattern bug and the catch-block bug. The current route validates diets with `!VALID_DIETS.includes(diet)` and returns a 400 response for invalid values; the earlier claim that the live route still had backwards validation is stale and has been corrected.
 - **Commit:** https://github.com/Rex-The-Programmer/Dino-Go/commit/4848c79df02b9fa11f791a0b69351f832766fa75
 
 ### Entry 2 — Frontend white-screen debugging, App.jsx/DinoListPage.jsx rebuild
@@ -41,6 +41,20 @@ Claude (Anthropic) was used throughout this project's backend, frontend, data, a
 - **What I kept / changed / why:** The page was committed as described. The Git history does not record any separate edits to this implementation.
 - **Commit:** https://github.com/Rex-The-Programmer/Dino-Go/commit/d2376be8d6c1dd69e1db89859c7cad9bc35bcbb3 ("Added Favorites page")
 
+### Entry 6 — Railway production build
+- **Date / Tool:** Oct 8, 2026 — Copilot SDK in VS Code
+- **What I asked:** Investigated Railway's `vite: not found` failure during `npm run build`.
+- **What it gave back:** Updated the root build script to install the frontend's locked dependencies, including Vite, before running its production build; updated the deployment instructions.
+- **What I kept / changed / why:** The build succeeds with npm's production setting enabled. The Railway deployment builds the client so Express can serve it; the current live frontend is also deployed separately on Vercel.
+- **Commit:** https://github.com/Rex-The-Programmer/Dino-Go/commit/dae4f8c ("Fix Railway production frontend build").
+
+### Entry 7 — Vercel frontend and Railway API deployment
+- **Date / Tool:** Oct 8, 2026 — Copilot SDK in VS Code
+- **What I asked:** Diagnosed the frontend's JSON parse error and subsequent failed API fetch on Vercel.
+- **What it gave back:** Made the API base configurable through the build-time `VITE_API_URL`, added clearer handling when an API returns non-JSON content, and configured Express CORS to allow the explicitly configured `CLIENT_ORIGIN`.
+- **What I kept / changed / why:** Set Vercel's API base to the Railway `/api` URL and Railway's allowed origin to the Vercel origin. Verified the production API response and preflight from the Vercel origin, then loaded the dino list and favorites in the browser.
+- **Commit:** https://github.com/Rex-The-Programmer/Dino-Go/commit/be49998 ("Configure API access for Vercel deployment").
+
 ---
 
 ## 2. Where the AI Got It Wrong
@@ -63,8 +77,12 @@ Claude (Anthropic) was used throughout this project's backend, frontend, data, a
 
 ### Work I wrote myself
 
-I wrote `dino.js`, `favorites.js`, and `server.js` in the routes folder. I also created and managed the project's database in Supabase.
+I wrote the initial `routes/dinos.js`, `routes/favorites.js`, and root `server.js`, and created and managed the project's database in Supabase. The later deployment changes to `server.js` (static frontend serving and configured CORS) were AI-assisted.
 
 ### AI-assisted code I understand best
 
-The part of `routes/dinos.js` I understand best is the combined search and diet-filter query. I wrote the route's first draft, and Claude reviewed it and pointed out bugs that I fixed. The route adds a parameterized SQL condition for each selected filter, joins the conditions with `AND`, and orders the matching dinos by name. This means a search and diet filter can be applied together, while query values are passed separately instead of being inserted into the SQL string.
+The part of `routes/dinos.js` I understand best is the combined search and diet-filter query. I wrote the route's first draft, and Claude reviewed it and pointed out bugs that I fixed. The route adds a parameterized SQL condition for each selected filter, joins the conditions with `AND`, and orders matching dinos by name. This means search and diet filters can be applied together, while query values are passed separately instead of being inserted into the SQL string.
+
+## 4. Current deployment notes
+
+The live frontend is hosted at https://dino-go-fskt.vercel.app/ and calls the API at https://dino-go-production.up.railway.app/. The API allows the configured Vercel origin through CORS. CORS is a browser policy, not user authentication: the Railway API itself remains directly reachable, and the app has no login or per-user favorites. Cloudflare Access has not been configured for the current split-host deployment.

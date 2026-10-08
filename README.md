@@ -2,6 +2,10 @@
 
 A lightweight ARK: Survival Evolved taming reference app built with React, Express, and PostgreSQL.
 
+**Live app:** [dino-go-fskt.vercel.app](https://dino-go-fskt.vercel.app/)
+
+**API service:** [dino-go-production.up.railway.app](https://dino-go-production.up.railway.app/)
+
 [![AI-assisted project](https://img.shields.io/badge/Made_with-AI_assistance-blue)](AI-USAGE.md)
 
 > Built with AI assistance during backend setup, debugging, and data/calculation work. See [AI-USAGE.md](AI-USAGE.md) for the project notes.
@@ -23,6 +27,7 @@ The project is designed around a simple workflow:
 - Routing: React Router
 - Backend: Node.js + Express
 - Database: PostgreSQL via Supabase
+- Hosting: Vercel (frontend) and Railway (API)
 
 ## Features
 
@@ -30,7 +35,7 @@ The project is designed around a simple workflow:
 - Dino detail view with taming information
 - Favorite tracking in the database
 - Taming effectiveness calculator
-- Responsive UI for desktop and local use
+- Responsive UI for desktop and mobile
 
 ## Project structure
 
@@ -38,21 +43,23 @@ The project is designed around a simple workflow:
 Dino-Go/
 ├── client/                 # React frontend
 │   ├── src/
+│   ├── public/
+│   ├── vercel.json
 │   └── package.json
 ├── routes/                 # Express route handlers
 ├── db.js                   # PostgreSQL connection setup
 ├── server.js               # API server entry point
 ├── package.json
+├── .env.example            # Placeholder environment variables
 ├── README.md
 ├── AI-USAGE.md
 ├── LICENSE
-├── Screenshots/            # Local app screenshots
-└── node_modules/
+└── Screenshots/            # Project screenshots
 ```
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 22.12 or newer
 - npm
 - A Supabase project with PostgreSQL enabled
 - Git
@@ -68,36 +75,45 @@ cd Dino-Go
 
 ### 2) Install dependencies
 
-Backend:
+Install the backend dependencies from the repository root:
 
 ```bash
 npm install
 ```
 
-Frontend:
+Install the frontend dependencies:
 
 ```bash
 cd client
 npm install
+cd ..
 ```
 
 ### 3) Configure environment variables
 
-Copy `.env.example` to `.env` in the project root and fill in the real Supabase connection string locally:
+Copy `.env.example` to `.env` in the project root and fill in the real Supabase connection string locally. Keep `.env` private; it is ignored by Git.
 
 ```env
 DATABASE_URL=postgresql://postgres.<project-ref>:<database-password>@aws-0-<region>.pooler.supabase.com:5432/postgres
 PORT=3000
+CLIENT_ORIGIN=http://localhost:5173
 ```
 
-Notes:
+#### Production environment variables
 
-- Use the Supabase session pooler connection string for the backend.
-- URL-encode special characters in the password if needed.
-- `.env` files are ignored by Git. Keep real credentials in local environment variables or your hosting provider's secret settings, never in source control.
-- The frontend uses relative `/api` URLs. Vite proxies these requests to Express during local development; in production, Express serves the built frontend and API from the same origin.
-- When hosting the frontend separately on Vercel, set the Vercel environment variable `VITE_API_URL` to the Railway API base URL, including `/api` (for example, `https://your-service.up.railway.app/api`). Set Railway's `CLIENT_ORIGIN` to the exact Vercel origin (for example, `https://your-project.vercel.app`) so browsers can make cross-origin API requests. Redeploy the Vercel frontend after changing `VITE_API_URL`; it is applied at build time.
-- The preferred single-origin setup for Cloudflare Access is to serve the built frontend and API together from Express. A separate Vercel frontend plus public Railway API has a direct-origin bypass unless the Railway service is also restricted.
+The live frontend and API are hosted separately:
+
+| Host | Variable | Value |
+|---|---|---|
+| Vercel | `VITE_API_URL` | `https://dino-go-production.up.railway.app/api` |
+| Railway | `CLIENT_ORIGIN` | `https://dino-go-fskt.vercel.app` |
+| Railway | `DATABASE_URL` | The Supabase session-pooler connection string, configured as a secret |
+
+`VITE_API_URL` is embedded into the frontend during the build, so redeploy Vercel after changing it. Railway should start the Express server with `npm start`. The API only sends browser CORS headers for origins in `CLIENT_ORIGIN`; comma-separated exact origins are supported. CORS controls browser access but is not authentication or a replacement for Cloudflare Access.
+
+For a same-origin local development setup, the Vite dev server proxies `/api` to `http://localhost:3000`. If `VITE_API_URL` is not set, the client also uses the relative `/api` path, suitable when Express serves both the built frontend and API.
+
+Use Supabase's session pooler connection string and URL-encode special characters in its password if needed. Do not put credentials in frontend variables: Vite-prefixed variables are public in the built client.
 
 ### 4) Set up the database
 
@@ -134,13 +150,13 @@ CREATE TABLE taming_foods (
 
 ## Running the app
 
-Start the API in the project root:
+Start the API from the repository root:
 
 ```bash
 npm start
 ```
 
-For local frontend development, run Vite in a second terminal:
+In a second terminal, start the Vite development server:
 
 ```bash
 cd client
@@ -165,13 +181,13 @@ Expected response:
 { "status": "ok" }
 ```
 
-Build the production frontend with:
+Build the production frontend:
 
 ```bash
 npm run build
 ```
 
-The Express server serves `client/dist` when it exists, including client-side routes. For a single-origin production deployment, install the repository dependencies, run `npm run build` (which installs the locked client build dependencies, including Vite), and use `npm start` as the start command.
+The root build script installs the client dependencies from `client/package-lock.json`, including Vite, and creates `client/dist`. Express serves that build, including client-side routes, when it is deployed together with the API. Railway's build command can be `npm run build`; its start command is `npm start`. Vercel deploys the `client/` project separately using its Vite build. Its `vercel.json` rewrite supports React Router page routes.
 
 ## Screenshots
 
@@ -193,23 +209,21 @@ The app screenshots are stored in the repository's `Screenshots/` folder.
 | GET | `/api/dinos` | List dinos with optional search/filter parameters |
 | GET | `/api/dinos/:id` | Get a single dino with taming details |
 | GET | `/api/favorites` | List favorited dinos |
-| POST | `/api/favorites/:dinoId` | Add a favorite |
-| DELETE | `/api/favorites/:dinoId` | Remove a favorite |
+| POST | `/api/favorites/:dinoId` | Add a favorite (409 if already saved) |
+| DELETE | `/api/favorites/:dinoId` | Remove a favorite (204 on success) |
 
-## Known issues
+## Deployment and security status
 
-The project is in active development and the README reflects the current state of the app. Some known issues may include incomplete data validation, optional placeholder values in certain taming calculations, and screenshot assets being stored in the repo root rather than a dedicated frontend assets folder.
+The frontend is publicly available on Vercel and its API is publicly reachable on Railway. Favorites are shared application data; there is no user login or per-user favorite ownership.
 
-## Public-release security checklist (draft)
+Cloudflare Access was selected as the intended access gate, but it is not configured or verified in this deployment. Putting Access only in front of the Vercel site would not protect the separately reachable Railway API URL. Before relying on Access, place the frontend and API behind a protected hostname and restrict direct access to the Railway origin, or choose an in-app authentication gate.
 
-- [ ] **Secrets:** Set `DATABASE_URL` only in local `.env` or the hosting provider's environment settings. `.env` is ignored; `.env.example` contains placeholders only. A historical `.env` commit was found, so rotate the Supabase database password before making the repository public. Removing the file from the latest commit does not remove it from Git history.
-- [ ] **Cloudflare Access (Option A):** Put the production app on one hostname, such as `[APP_HOSTNAME]`, with Cloudflare proxying the DNS record. Create one self-hosted Access application for that hostname and an Allow policy using one-time PIN for the owner's email and the grader's email. Keep the actual hostname and email addresses in a private deployment checklist, not this public README.
-- [ ] **Origin bypass:** Confirm the hosting provider's default hostname cannot be used to reach the app without Cloudflare Access (disable it or restrict it if supported). Cloudflare Access on the custom hostname does not protect a separately accessible host URL.
-- [ ] **Access test:** In a private browser window, confirm the custom hostname requests a one-time PIN, and verify the allowed accounts can use the UI and favorites. Test that the host's default URL is unavailable or restricted.
-- [ ] **Queries and errors:** User-provided query values use parameterized SQL, and API errors return generic messages without stack traces or database details.
-- [ ] **Debug routes:** No debug, seed, or reset routes are present.
-- [ ] **GitHub Actions:** No project workflows are currently present under `.github/workflows/`.
-- [ ] **Personal information:** Keep the developer's name, personal email, and student number out of public files and commits. The seed data is game data.
+- `.env` is excluded by `.gitignore`; `.env.example` contains placeholders only. A database connection string was present in earlier Git history. Rotate the Supabase database password if that credential is still active; deleting the file from the current revision does not remove it from history.
+- SQL queries use parameters for user-provided values, and API errors return generic client responses.
+- The application has no debug, seed, or reset API routes.
+- No project GitHub Actions workflows are configured.
+- Keep personal contact details and student identifiers out of public files and commits.
+- Keep the Cloudflare hostname, Access policy emails, and other private deployment notes outside this public repository.
 
 ## License
 
