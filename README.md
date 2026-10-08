@@ -96,6 +96,8 @@ Notes:
 - URL-encode special characters in the password if needed.
 - `.env` files are ignored by Git. Keep real credentials in local environment variables or your hosting provider's secret settings, never in source control.
 - The frontend uses relative `/api` URLs. Vite proxies these requests to Express during local development; in production, Express serves the built frontend and API from the same origin.
+- When hosting the frontend separately on Vercel, set the Vercel environment variable `VITE_API_URL` to the Railway API base URL, including `/api` (for example, `https://your-service.up.railway.app/api`). Set Railway's `CLIENT_ORIGIN` to the exact Vercel origin (for example, `https://your-project.vercel.app`) so browsers can make cross-origin API requests. Redeploy the Vercel frontend after changing `VITE_API_URL`; it is applied at build time.
+- The preferred single-origin setup for Cloudflare Access is to serve the built frontend and API together from Express. A separate Vercel frontend plus public Railway API has a direct-origin bypass unless the Railway service is also restricted.
 
 ### 4) Set up the database
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require("path");
 const fs = require("fs");
+const cors = require("cors");
 require("dotenv").config();
 
 const dinoRoutes = require("./routes/dinos");
@@ -10,7 +11,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const clientBuildPath = path.join(__dirname, "client", "dist");
 const clientIndexPath = path.join(clientBuildPath, "index.html");
+const allowedOrigins = (process.env.CLIENT_ORIGIN || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
+app.use(cors({
+    origin: (origin, callback) => {
+        callback(null, !origin || allowedOrigins.includes(origin));
+    },
+}));
 app.use(express.json());
 
 app.get("/health", (req, res) => {
