@@ -19,7 +19,8 @@ The project is designed around a simple workflow:
 1. Search or filter the dino list
 2. Open a dino detail page
 3. Review taming info and food efficiency
-4. Save favorites for quick access later
+4. View Kibble Recipes
+5. Save favorites for quick access later
 
 ## Tech stack
 
