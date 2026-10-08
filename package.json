@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
+    "build": "npm --prefix client run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,7 +20,6 @@
   },
   "homepage": "https://github.com/Rex-The-Programmer/Dino-Go#readme",
   "dependencies": {
-    "cors": "^2.8.6",
     "dotenv": "^18.0.3",
     "express": "^5.2.1",
     "pg": "^8.23.0"

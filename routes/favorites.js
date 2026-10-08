@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
         res.json(result.rows);
     } catch (err) {
         console.error('GET /api/favorites failed', err);
-        res.status(501).json({ error: "GET /api/favorites is not built yet (Phase 2)" });
+        res.status(500).json({ error: 'Failed to fetch favorites' });
 
     }
 });;

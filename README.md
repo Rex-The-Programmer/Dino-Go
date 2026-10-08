@@ -83,24 +83,19 @@ npm install
 
 ### 3) Configure environment variables
 
-Create a `.env` file in the project root for the backend:
+Copy `.env.example` to `.env` in the project root and fill in the real Supabase connection string locally:
 
 ```env
-DATABASE_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres
+DATABASE_URL=postgresql://postgres.<project-ref>:<database-password>@aws-0-<region>.pooler.supabase.com:5432/postgres
 PORT=3000
-```
-
-Create a `client/.env` file for the frontend:
-
-```env
-VITE_API_URL=http://localhost:3000/api
 ```
 
 Notes:
 
 - Use the Supabase session pooler connection string for the backend.
 - URL-encode special characters in the password if needed.
-- Keep `.env` files local and do not commit real credentials.
+- `.env` files are ignored by Git. Keep real credentials in local environment variables or your hosting provider's secret settings, never in source control.
+- The frontend uses relative `/api` URLs. Vite proxies these requests to Express during local development; in production, Express serves the built frontend and API from the same origin.
 
 ### 4) Set up the database
 
@@ -140,10 +135,10 @@ CREATE TABLE taming_foods (
 Start the API in the project root:
 
 ```bash
-node server.js
+npm start
 ```
 
-Then start the frontend in a second terminal:
+For local frontend development, run Vite in a second terminal:
 
 ```bash
 cd client
@@ -167,6 +162,14 @@ Expected response:
 ```json
 { "status": "ok" }
 ```
+
+Build the production frontend with:
+
+```bash
+npm run build
+```
+
+The Express server serves `client/dist` when it exists, including client-side routes. For a single-origin production deployment, install dependencies in both the repository root and `client/`, run `npm run build`, and use `npm start` as the start command.
 
 ## Screenshots
 
@@ -194,6 +197,17 @@ The app screenshots are stored in the repository's `Screenshots/` folder.
 ## Known issues
 
 The project is in active development and the README reflects the current state of the app. Some known issues may include incomplete data validation, optional placeholder values in certain taming calculations, and screenshot assets being stored in the repo root rather than a dedicated frontend assets folder.
+
+## Public-release security checklist (draft)
+
+- [ ] **Secrets:** Set `DATABASE_URL` only in local `.env` or the hosting provider's environment settings. `.env` is ignored; `.env.example` contains placeholders only. A historical `.env` commit was found, so rotate the Supabase database password before making the repository public. Removing the file from the latest commit does not remove it from Git history.
+- [ ] **Cloudflare Access (Option A):** Put the production app on one hostname, such as `[APP_HOSTNAME]`, with Cloudflare proxying the DNS record. Create one self-hosted Access application for that hostname and an Allow policy using one-time PIN for the owner's email and the grader's email. Keep the actual hostname and email addresses in a private deployment checklist, not this public README.
+- [ ] **Origin bypass:** Confirm the hosting provider's default hostname cannot be used to reach the app without Cloudflare Access (disable it or restrict it if supported). Cloudflare Access on the custom hostname does not protect a separately accessible host URL.
+- [ ] **Access test:** In a private browser window, confirm the custom hostname requests a one-time PIN, and verify the allowed accounts can use the UI and favorites. Test that the host's default URL is unavailable or restricted.
+- [ ] **Queries and errors:** User-provided query values use parameterized SQL, and API errors return generic messages without stack traces or database details.
+- [ ] **Debug routes:** No debug, seed, or reset routes are present.
+- [ ] **GitHub Actions:** No project workflows are currently present under `.github/workflows/`.
+- [ ] **Personal information:** Keep the developer's name, personal email, and student number out of public files and commits. The seed data is game data.
 
 ## License
 
