@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "build": "npm --prefix client run build",
+    "build": "npm --prefix client ci --include=dev && npm --prefix client run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -169,7 +169,7 @@ Build the production frontend with:
 npm run build
 ```
 
-The Express server serves `client/dist` when it exists, including client-side routes. For a single-origin production deployment, install dependencies in both the repository root and `client/`, run `npm run build`, and use `npm start` as the start command.
+The Express server serves `client/dist` when it exists, including client-side routes. For a single-origin production deployment, install the repository dependencies, run `npm run build` (which installs the locked client build dependencies, including Vite), and use `npm start` as the start command.
 
 ## Screenshots
 
