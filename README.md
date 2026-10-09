@@ -198,9 +198,20 @@ The app preview and project artwork are stored in the repository's `Screenshots/
 
 ![Dino Go dinosaur list with search, diet filters, and favorite controls](Screenshots/Screenshot_20.jpg)
 
-### Egg artwork
+### Dino Detail Page
+![Dinosaurs with their taming method and based stats with also short description](Screenshots/Screenshot_26.jpg)
 
-![Stylized dinosaur egg artwork](Screenshots/dododex.png)
+### Dino Taming Calculator
+![Taming Calculator page, includes its sanguine elixer, taming level, taming speed and effecitiveness tame](Screenshots/Screenshot_27.jpg)
+
+### Dino Favorite Page
+![Dino Go page with only favorites/starred dinos](Screenshots/Screenshot_24.jpg)
+
+### Kibble Recipe Page
+![Kibble recipe page ranging from basic to extraordinary kibble also with clickable preferred dino straight into dino detail page](Screenshots/Screenshot_25.jpg)
+
+### About me Page
+![Info on Purpose, Data and Image, Built With and Made by](Screenshots/Screenshot_28.jpg)
 
 ## API overview
 
