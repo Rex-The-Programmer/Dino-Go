@@ -192,15 +192,15 @@ The root build script installs the client dependencies from `client/package-lock
 
 ## Screenshots
 
-The app screenshots are stored in the repository's `Screenshots/` folder.
+The app preview and project artwork are stored in the repository's `Screenshots/` folder.
 
-![Dino list](Screenshots/Screenshot_20.jpg)
+### Dino list
 
-![Dino detail](Screenshots/Screenshot_21.jpg)
+![Dino Go dinosaur list with search, diet filters, and favorite controls](Screenshots/Screenshot_20.jpg)
 
-![Favorites view](Screenshots/Screenshot_22.jpg)
+### Egg artwork
 
-![Project UI overview](Screenshots/Screenshot_23.jpg)
+![Stylized dinosaur egg artwork](Screenshots/dododex.png)
 
 ## API overview
 
