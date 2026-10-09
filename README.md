@@ -3,14 +3,13 @@
 A lightweight ARK: Survival Evolved taming reference app built with React, Express, and PostgreSQL.
 
 **Live app:** [dino-go-fskt.vercel.app](https://dino-go-fskt.vercel.app/)
-
-![Dino Go dinosaur list with search, diet filters, and favorite controls](Screenshots/Screenshot_20.jpg)
-
 **API service:** [dino-go-production.up.railway.app](https://dino-go-production.up.railway.app/)
 
 [![AI-assisted project](https://img.shields.io/badge/Made_with-AI_assistance-blue)](AI-USAGE.md)
 
 > Built with AI assistance during backend setup, debugging, and data/calculation work. See [AI-USAGE.md](AI-USAGE.md) for the project notes.
+
+![Dino Go dinosaur list with search, diet filters, and favorite controls](Screenshots/Screenshot_20.jpg)
 
 ## Overview
 
