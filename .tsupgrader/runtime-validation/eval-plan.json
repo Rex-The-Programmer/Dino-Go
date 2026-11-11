@@ -1,0 +1,60 @@
+{
+  "generatedOnPlatform": "win32",
+  "projectType": "server",
+  "setup": [
+    {
+      "command": "npm",
+      "args": [
+        "ci"
+      ]
+    },
+    {
+      "command": "npm",
+      "args": [
+        "ci"
+      ],
+      "cwd": "client"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "root-build",
+      "kind": "process",
+      "command": "npm",
+      "args": [
+        "run",
+        "build"
+      ],
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 600
+    },
+    {
+      "name": "server-health",
+      "kind": "http-probe",
+      "startCommand": "npm",
+      "startArgs": [
+        "run",
+        "start"
+      ],
+      "env": {
+        "PORT": "3001"
+      },
+      "url": "http://localhost:3001/health",
+      "verificationMethod": "http-status",
+      "expected": "200",
+      "timeoutSeconds": 120
+    },
+    {
+      "name": "tests-pass",
+      "kind": "process",
+      "command": "npm",
+      "args": [
+        "test"
+      ],
+      "verificationMethod": "test-results",
+      "expected": "0",
+      "timeoutSeconds": 300
+    }
+  ]
+}

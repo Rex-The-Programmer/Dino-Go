@@ -1,0 +1,121 @@
+{
+  "planHash": "d0fc36b39bea3db006d4c5bf4335feac66878847974169f6f4567fb16265a226",
+  "phase": "baseline",
+  "recordedAtUtc": "2026-11-11T05:18:01.1783607Z",
+  "retryCount": 0,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 15006,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "root-build",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E dino-go@1.0.0 build\r\n\u003E npm --prefix client ci --include=dev \u0026\u0026 npm --prefix client run build\r\n\r\nnpm notice Beginning October 4, 2021, all connections to the npm registry - including for package installation - must use TLS 1.2 or higher. You are currently using plaintext http to connect. Please visit the GitHub blog for more information: https://github.blog/2021-08-23-npm-registry-deprecating-tls-1-0-tls-1-1/\r\nnpm notice Beginning October 4, 2021, all connections to the npm registry - including for package installation - must use TLS 1.2 or higher. You are currently using plaintext http to connect. Please visit the GitHub blog for more information: https://github.blog/2021-08-23-npm-registry-deprecating-tls-1-0-tls-1-1/\r\n\r\nadded 163 packages in 9s\r\n\r\n36 packages are looking for funding\r\n  run \u0060npm fund\u0060 for details\r\n\r\n\u003E client-temp@0.0.0 build\r\n\u003E vite build\r\n\r\n\u001B[36mvite v8.3.1 \u001B[32mbuilding client environment for production...\u001B[36m\u001B[39m\r\ntransforming...\r\n\u2713 59 modules transformed.\r\nrendering chunks...\r\ncomputing gzip size...\r\ndist/index.html                   0.46 kB \u2502 gzip:  0.29 kB\r\ndist/assets/index-BWl8NJyg.css   12.25 kB \u2502 gzip:  3.09 kB\r\ndist/assets/index-BKLYBaSY.js   278.70 kB \u2502 gzip: 88.26 kB\r\n\r\n\u001B[32m\u2713 built in 318ms\u001B[39m\r\n",
+        "durationMs": 11207
+      },
+      {
+        "name": "server-health",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n{\u0022status\u0022:\u0022ok\u0022}\n--- server output ---\n\r\n\u003E dino-go@1.0.0 start\r\n\u003E node server.js\r\n\r\n\u25C7 injected env (1) from .env\r\n\u25C7 injected env (0) from .env\r\nServer is running on port 3001\r\n",
+        "durationMs": 1055
+      },
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E dino-go@1.0.0 test\r\n\u003E npm --prefix client test\r\n\r\n\r\n\u003E client-temp@0.0.0 test\r\n\u003E vitest run\r\n\r\n\r\n RUN  v5.1.0 C:/Users/ailger/Desktop/aq/Gerail/HAU/CODING/APSI/Dino-Go/client\r\n\r\n\r\n Test Files  1 passed (1)\r\n      Tests  2 passed (2)\r\n   Start at  13:18:00\r\n   Duration  234ms (transform 46%, import 42%, worker 6%, tests 6%)\r\n\r\n",
+        "durationMs": 1488,
+        "testResults": {
+          "testFramework": "vitest",
+          "runnerDetectedFrom": "output_banner",
+          "testsTotal": 2,
+          "testsPassed": 2,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": false
+        }
+      }
+    ],
+    "executions": [
+      {
+        "source": "setup[0]",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "ci"
+        ],
+        "cwd": "C:\\Users\\ailger\\Desktop\\aq\\Gerail\\HAU\\CODING\\APSI\\Dino-Go",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "setup[1]",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "ci"
+        ],
+        "cwd": "C:\\Users\\ailger\\Desktop\\aq\\Gerail\\HAU\\CODING\\APSI\\Dino-Go\\client",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "root-build",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "C:\\Users\\ailger\\Desktop\\aq\\Gerail\\HAU\\CODING\\APSI\\Dino-Go",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "server-health",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "start"
+        ],
+        "cwd": "C:\\Users\\ailger\\Desktop\\aq\\Gerail\\HAU\\CODING\\APSI\\Dino-Go",
+        "env": {
+          "PORT": "3001"
+        },
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "test"
+        ],
+        "cwd": "C:\\Users\\ailger\\Desktop\\aq\\Gerail\\HAU\\CODING\\APSI\\Dino-Go",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}
