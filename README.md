@@ -3,7 +3,7 @@
 A lightweight ARK: Survival Evolved taming reference app built with React, Express, and PostgreSQL.
 
 **Live app:** [dino-go-fskt.vercel.app](https://dino-go-fskt.vercel.app/)
-**API service:** [dino-go-production.up.railway.app](https://dino-go-production.up.railway.app/)
+**API service:** Deploy the API using the Render Blueprint in [`render.yaml`](render.yaml).
 
 [![AI-assisted project](https://img.shields.io/badge/Made_with-AI_assistance-blue)](AI-USAGE.md)
 
@@ -29,7 +29,7 @@ The project is designed around a simple workflow:
 - Routing: React Router
 - Backend: Node.js + Express
 - Database: PostgreSQL via Supabase
-- Hosting: Vercel (frontend) and Railway (API)
+- Hosting: Vercel (frontend) and Render (API)
 
 ## Features
 
@@ -107,11 +107,13 @@ The live frontend and API are hosted separately:
 
 | Host | Variable | Value |
 |---|---|---|
-| Vercel | `VITE_API_URL` | `https://dino-go-production.up.railway.app/api` |
-| Railway | `CLIENT_ORIGIN` | `https://dino-go-fskt.vercel.app` |
-| Railway | `DATABASE_URL` | The Supabase session-pooler connection string, configured as a secret |
+| Vercel | `VITE_API_URL` | `https://<your-render-service>.onrender.com/api` |
+| Render | `CLIENT_ORIGIN` | `https://dino-go-fskt.vercel.app` |
+| Render | `DATABASE_URL` | The Supabase session-pooler connection string, configured as a secret |
 
-`VITE_API_URL` is embedded into the frontend during the build, so redeploy Vercel after changing it. Railway should start the Express server with `npm start`. The API only sends browser CORS headers for origins in `CLIENT_ORIGIN`; comma-separated exact origins are supported. CORS controls browser access but is not authentication or a replacement for Cloudflare Access.
+To redeploy the API without Railway, create a new Render Blueprint from this repository and select the `render.yaml` file. The Blueprint builds the frontend and API together, starts Express, and configures `/health` as its health check. During setup, provide `DATABASE_URL` using your Supabase session-pooler connection string; `CLIENT_ORIGIN` and the Node.js version are set in the Blueprint. After Render assigns the service URL, set Vercel's `VITE_API_URL` to that URL followed by `/api`, then redeploy the frontend. `VITE_API_URL` is embedded into the frontend during the build. The API only sends browser CORS headers for origins in `CLIENT_ORIGIN`; comma-separated exact origins are supported. CORS controls browser access but is not authentication or a replacement for Cloudflare Access.
+
+Render's Free web services sleep after 15 minutes without inbound traffic and may take about a minute to wake on the next request. Render documents this tier as suitable for hobby projects and testing, not production workloads; review its current usage limits before deploying.
 
 For a same-origin local development setup, the Vite dev server proxies `/api` to `http://localhost:3000`. If `VITE_API_URL` is not set, the client also uses the relative `/api` path, suitable when Express serves both the built frontend and API.
 
@@ -189,7 +191,7 @@ Build the production frontend:
 npm run build
 ```
 
-The root build script installs the client dependencies from `client/package-lock.json`, including Vite, and creates `client/dist`. Express serves that build, including client-side routes, when it is deployed together with the API. Railway's build command can be `npm run build`; its start command is `npm start`. Vercel deploys the `client/` project separately using its Vite build. Its `vercel.json` rewrite supports React Router page routes.
+The root build script installs the client dependencies from `client/package-lock.json`, including Vite, and creates `client/dist`. Express serves that build, including client-side routes, when it is deployed together with the API. Render's build command is `npm ci && npm run build`; its start command is `npm start`. Vercel deploys the `client/` project separately using its Vite build. Its `vercel.json` rewrite supports React Router page routes.
 
 ## Screenshots
 
@@ -227,9 +229,9 @@ The app preview and project artwork are stored in the repository's `Screenshots/
 
 ## Deployment and security status
 
-The frontend is publicly available on Vercel and its API is publicly reachable on Railway. Favorites are shared application data; there is no user login or per-user favorite ownership.
+The frontend is publicly available on Vercel and the API is intended to be publicly reachable on Render. Favorites are shared application data; there is no user login or per-user favorite ownership.
 
-Cloudflare Access was selected as the intended access gate, but it is not configured or verified in this deployment. Putting Access only in front of the Vercel site would not protect the separately reachable Railway API URL. Before relying on Access, place the frontend and API behind a protected hostname and restrict direct access to the Railway origin, or choose an in-app authentication gate.
+Cloudflare Access was selected as the intended access gate, but it is not configured or verified in this deployment. Putting Access only in front of the Vercel site would not protect the separately reachable Render API URL. Before relying on Access, place the frontend and API behind a protected hostname and restrict direct access to the Render origin, or choose an in-app authentication gate.
 
 - `.env` is excluded by `.gitignore`; `.env.example` contains placeholders only. A database connection string was present in earlier Git history. Rotate the Supabase database password if that credential is still active; deleting the file from the current revision does not remove it from history.
 - SQL queries use parameters for user-provided values, and API errors return generic client responses.

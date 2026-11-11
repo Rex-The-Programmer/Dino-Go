@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: dino-go-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: CLIENT_ORIGIN
+        value: https://dino-go-fskt.vercel.app
+      - key: DATABASE_URL
+        sync: false
