@@ -3,7 +3,7 @@
 A lightweight ARK: Survival Evolved taming reference app built with React, Express, and PostgreSQL.
 
 **Live app:** [dino-go-fskt.vercel.app](https://dino-go-fskt.vercel.app/)
-**API service:** Deploy the API using the Render Blueprint in [`render.yaml`](render.yaml).
+**API service:** [dino-go-api.onrender.com](https://dino-go-api.onrender.com/) (health: [/health](https://dino-go-api.onrender.com/health))
 
 [![AI-assisted project](https://img.shields.io/badge/Made_with-AI_assistance-blue)](AI-USAGE.md)
 
@@ -107,11 +107,11 @@ The live frontend and API are hosted separately:
 
 | Host | Variable | Value |
 |---|---|---|
-| Vercel | `VITE_API_URL` | `https://<your-render-service>.onrender.com/api` |
+| Vercel | `VITE_API_URL` | `https://dino-go-api.onrender.com/api` |
 | Render | `CLIENT_ORIGIN` | `https://dino-go-fskt.vercel.app` |
 | Render | `DATABASE_URL` | The Supabase session-pooler connection string, configured as a secret |
 
-To redeploy the API without Railway, create a new Render Blueprint from this repository and select the `render.yaml` file. The Blueprint builds the frontend and API together, starts Express, and configures `/health` as its health check. During setup, provide `DATABASE_URL` using your Supabase session-pooler connection string; `CLIENT_ORIGIN` and the Node.js version are set in the Blueprint. After Render assigns the service URL, set Vercel's `VITE_API_URL` to that URL followed by `/api`, then redeploy the frontend. `VITE_API_URL` is embedded into the frontend during the build. The API only sends browser CORS headers for origins in `CLIENT_ORIGIN`; comma-separated exact origins are supported. CORS controls browser access but is not authentication or a replacement for Cloudflare Access.
+The API is deployed on Render using the Blueprint in [`render.yaml`](render.yaml). To create or redeploy it, create a Render Blueprint from this repository and select that file. The Blueprint builds the frontend and API together, starts Express, and configures `/health` as its health check. During setup, provide `DATABASE_URL` using your Supabase session-pooler connection string; `CLIENT_ORIGIN` and the Node.js version are set in the Blueprint. The deployed API is available at [dino-go-api.onrender.com](https://dino-go-api.onrender.com/). Vercel's `VITE_API_URL` is set to the API URL followed by `/api`; this value is embedded into the frontend during the build. The API only sends browser CORS headers for origins in `CLIENT_ORIGIN`; comma-separated exact origins are supported. CORS controls browser access but is not authentication or a replacement for Cloudflare Access.
 
 Render's Free web services sleep after 15 minutes without inbound traffic and may take about a minute to wake on the next request. Render documents this tier as suitable for hobby projects and testing, not production workloads; review its current usage limits before deploying.
 
